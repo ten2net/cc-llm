@@ -2,24 +2,29 @@ version: '3.10'
 
 services:
   vllmapiserver:
-    image: llm-api:vllm
+    # image: llm-api:vllm
+    image:  cc-aigc/cc-llm:vllm
     command: python api/server.py
+    shm_size: 12G
     ulimits:
       stack: 67108864
       memlock: -1
     environment:
       - PORT=8000
-      - MODEL_NAME=qwen
-      - MODEL_PATH=checkpoints/qwen-7b-chat
-      - EMBEDDING_NAME=checkpoints/m3e-base
+      # - MODEL_NAME=qwen
+      # - MODEL_PATH=checkpoints/qwen-7b-chat
+      # - EMBEDDING_NAME=checkpoints/m3e-base
+      # - DEVICE_MAP=auto
+      # - DTYPE=half
     volumes:
       - $PWD:/workspace
       # model path need to be specified if not in pwd
 #      - /data/checkpoints:/workspace/checkpoints
+      - $PWD/../huggingface:/workspace/checkpoints
     env_file:
-      - .env.vllm.example
+      - .env.vllm
     ports:
-      - "7891:8000"
+      - "13090:8000"
     restart: always
     networks:
       - vllmapinet
@@ -28,7 +33,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ['0','1']
               capabilities: [gpu]
 
 networks:
