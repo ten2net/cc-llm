@@ -5,8 +5,10 @@ ENV PYTHONPATH /workspace/
 COPY requirements.txt /workspace/
 COPY . /workspace
 
-RUN pip install --no-cache-dir -r /workspace/requirements.txt -i https://mirror.baidu.com/pypi/simple
-RUN pip install bitsandbytes --upgrade -i https://mirror.baidu.com/pypi/simple && \
-    pip install torch -U -i https://mirror.baidu.com/pypi/simple && \
-    pip install vllm>=0.1.4 && \
+RUN /usr/bin/python -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --upgrade pip
+# RUN pip install --no-cache-dir -r /workspace/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install -r /workspace/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install bitsandbytes --upgrade -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install torch -U -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install vllm>=0.1.4 -i https://pypi.tuna.tsinghua.edu.cn/simple && \
     pip uninstall transformer-engine -y
