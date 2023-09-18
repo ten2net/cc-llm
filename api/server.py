@@ -2,6 +2,10 @@ from api.config import config
 from api.models import EMBEDDED_MODEL, GENERATE_MDDEL, app, VLLM_ENGINE
 from api.routes import model_router
 
+import os
+tiktoken_cache_dir = os.path.join(os.getcwd(),"tiktoken_cache")
+os.environ["TIKTOKEN_CACHE_DIR"] = tiktoken_cache_dir
+print("TIKTOKEN_CACHE_DIR",tiktoken_cache_dir)
 
 prefix = config.API_PREFIX
 app.include_router(model_router, prefix=prefix, tags=["Model"])
