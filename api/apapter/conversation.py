@@ -233,16 +233,30 @@ class AlpacaPromptAdapter(BasePromptAdapter):
 
 class FireflyPromptAdapter(BasePromptAdapter):
     """ formated prompt likes:
-        <s>{query0}</s>{response0}</s><s>{query1}</s>
+        <s>{query0}</s>{response0}</s>{query1}</s>
     """
 
     name = "firefly"
-    system_prompt = ""
-    user_prompt = "<s>{}</s>"
+    system_prompt = "<s>"
+    user_prompt = "{}</s>"
     assistant_prompt = "{}</s>"
 
     def match(self, model_name) -> bool:
-        return "firefly" in model_name or "baichuan-7b" in model_name
+        return "firefly" in model_name
+
+
+class FireflyForQwenPromptAdapter(BasePromptAdapter):
+    """ formated prompt likes:
+        <|endoftext|>{query0}<|endoftext|>{response0}<|endoftext|>{query1}<|endoftext|>
+    """
+
+    name = "firefly-qwen"
+    system_prompt = "<|endoftext|>"
+    user_prompt = "{}<|endoftext|>"
+    assistant_prompt = "{}<|endoftext|>"
+
+    def match(self, model_name) -> bool:
+        return "firefly-qwen" in model_name
 
 
 class BaizePromptAdapter(BasePromptAdapter):
@@ -503,7 +517,13 @@ class Llama2ChatPromptAdapter(BasePromptAdapter):
     """
 
     name = "llama2"
-    system_prompt = "[INST] <<SYS>>\n{}\n<</SYS>>\n\n"
+    system_prompt = """[INST] <<SYS>>
+You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
+
+If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information.
+<</SYS>>
+
+"""
     user_prompt = "[INST] {} "
     assistant_prompt = "[/INST] {} </s><s>"
     stop = {
@@ -514,10 +534,7 @@ class Llama2ChatPromptAdapter(BasePromptAdapter):
         return "llama2" in model_name or "code-llama" in model_name
 
     def generate_prompt(self, messages: List[ChatMessage]) -> str:
-        prompt = """You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
-
-If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information."""
-        prompt = self.system_prompt.format(prompt)
+        prompt = self.system_prompt
         for i, message in enumerate(messages):
             role, content = message.role, message.content
             if i == 0:
@@ -532,6 +549,20 @@ If a question does not make any sense, or is not factually coherent, explain why
             prompt += "[/INST] "
 
         return prompt
+
+
+class ChineseAlpaca2ChatPromptAdapter(Llama2ChatPromptAdapter):
+    """ https://github.com/ymcui/Chinese-LLaMA-Alpaca-2 """
+
+    name = "chinese-llama-alpaca2"
+    system_prompt = """[INST] <<SYS>>
+You are a helpful assistant. 你是一个乐于助人的助手。
+<</SYS>>
+
+"""
+
+    def match(self, model_name) -> bool:
+        return "chinese-llama-alpaca-2" in model_name
 
 
 class QwenPromptAdapter(BasePromptAdapter):
@@ -601,12 +632,29 @@ class XversePromptAdapter(BasePromptAdapter):
         return "xverse" in model_name
 
 
+class VicunaPromptAdapter(BasePromptAdapter):
+    """ https://github.com/lm-sys/FastChat/blob/main/fastchat/conversation.py
+
+    formated prompt likes:
+        USER: {query0} ASSISTANT: {response0}</s>USER: {query1} ASSISTANT:
+    """
+
+    name = "vicuna"
+    system_prompt = "A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions."
+    user_prompt = "USER: {} ASSISTANT: "
+    assistant_prompt = "{}</s>"
+
+    def match(self, model_name) -> bool:
+        return "vicuna" in model_name or "xwin" in model_name
+
+
 register_prompt_adapter(ChatGLMPromptAdapter)
 register_prompt_adapter(ChatGLM2PromptAdapter)
 register_prompt_adapter(MossPromptAdapter)
 register_prompt_adapter(PhoenixPromptAdapter)
 register_prompt_adapter(AlpacaPromptAdapter)
 register_prompt_adapter(FireflyPromptAdapter)
+register_prompt_adapter(FireflyForQwenPromptAdapter)
 register_prompt_adapter(BaizePromptAdapter)
 register_prompt_adapter(BellePromptAdapter)
 register_prompt_adapter(GuanacoPromptAdapter)
@@ -618,9 +666,11 @@ register_prompt_adapter(BaiChuan2PromptAdapter)
 register_prompt_adapter(StarChatPromptAdapter)
 register_prompt_adapter(AquilaChatPromptAdapter)
 register_prompt_adapter(Llama2ChatPromptAdapter)
+register_prompt_adapter(ChineseAlpaca2ChatPromptAdapter)
 register_prompt_adapter(QwenPromptAdapter)
 register_prompt_adapter(OctopackPromptAdapter)
 register_prompt_adapter(XversePromptAdapter)
+register_prompt_adapter(VicunaPromptAdapter)
 
 # After all adapters, try the default base adapter.
 register_prompt_adapter(BasePromptAdapter)
