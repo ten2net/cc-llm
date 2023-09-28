@@ -4,7 +4,7 @@ services:
   vllmapiserver:
     # image: llm-api:vllm
     # image:  cc-aigc/cc-llm:vllm
-    image:  cc-aigc/cc-llm-4bits:vllm
+    image:  cc-aigc/cc-llm:vllm
     command: python api/server.py
     shm_size: 12G
     ulimits:
