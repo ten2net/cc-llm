@@ -232,7 +232,7 @@ async def create_draw(request: dict):
         
     else:
         print('Request failed with status code:', response.status_code)  
-    return 'ok'  
+    return files  
     # logger.info(f"consume time  = {(time.time() - start_time)}s, response = {str(choices)}")
  
 
