@@ -3,7 +3,8 @@ version: '3.10'
 services:
   vllmapiserver:
     # image: llm-api:vllm
-    image:  cc-aigc/cc-llm:vllm
+    # image:  cc-aigc/cc-llm:vllm
+    image:  cc-aigc/cc-llm-4bits:vllm
     command: python api/server.py
     shm_size: 12G
     ulimits:
@@ -22,7 +23,8 @@ services:
 #      - /data/checkpoints:/workspace/checkpoints
       - $PWD/../huggingface:/workspace/checkpoints
     env_file:
-      - .env.vllm
+      # - .env.vllm
+      - .env.vllm.4bits
     ports:
       - "13090:8000"
     restart: always

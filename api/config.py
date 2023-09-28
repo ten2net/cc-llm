@@ -120,6 +120,10 @@ class Config:
         self.API_KEYS = get_env('API_KEYS').split(',') if get_env('API_KEYS') else None
 
         self.ACTIVATE_INFERENCE = get_bool_env('ACTIVATE_INFERENCE')
+        self.FOOOCUS_BASE_URL = get_env('FOOOCUS_BASE_URL')   
+        self.CCTALKS_BASE_URL = get_env('CCTALKS_BASE_URL')   
+        self.CCTALKS_BOT_APPID = get_env('CCTALKS_BOT_APPID')   
+        self.CCTALKS_BOT_SECRET = get_env('CCTALKS_BOT_SECRET')  
 
 
 config = Config()
