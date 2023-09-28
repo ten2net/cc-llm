@@ -54,10 +54,9 @@ async def create_draw(request: dict):
     }
     
     # response = requests.post(url, headers=headers, json=data)
-    response = await create_chat_completion(ChatCompletionRequest(**data))
+    response = await create_chat_completion(ChatCompletionRequest(**data),data)
     
     # get_test_url= f"http://{host}/test/{id}/"
-    # get_inp_url = f"http://{host}/test/{id}/inp"
     
     prompt_en = response.choices[0].message.content      
     logger.info(f'===8888===\n {prompt_en}')
@@ -179,9 +178,7 @@ async def create_draw(request: dict):
     # 构建请求的URL和数据
     template = Template("[md] $mdCode [/md]")
     files ='\n'.join(mdCode)
-    content = template.substitute(mdCode=files)
-    
-    print(">>>>>>>>>>>>>>>>>", content)
+    content = template.substitute(mdCode=files)    
     
     # mdFilePath = "result.md"
     # with open(mdFilePath, "w") as file:
