@@ -53,12 +53,12 @@ async def create_draw(request: dict):
         "stream": False
     }
     
-    # response = requests.post(url, headers=headers, json=data)
     response = await create_chat_completion(ChatCompletionRequest(**data),data)
     
     # get_test_url= f"http://{host}/test/{id}/"
     
-    prompt_en = response.choices[0].message.content      
+    prompt_en = response.choices[0].message.content   
+    # prompt_en='a cat'   
     logger.info(f'===8888===\n {prompt_en}')
         
     client = Client(config.FOOOCUS_BASE_URL, serialize=False)
@@ -148,18 +148,29 @@ async def create_draw(request: dict):
     result = client.predict(
             prompt_en,	# str in 'parameter_8' Textbox component
             "",	# str in '负向提示词' Textbox component
-            # ["Cinematic Diva"], #random_styles, #  ["Fooocus V2","SAI 3D Model"],	# List[str] in '图片风格' Checkboxgroup component
-            random_styles, #  ["Fooocus V2","SAI 3D Model"],	# List[str] in '图片风格' Checkboxgroup component
-            # ["广告 房地产"], #  ["Fooocus V2","SAI 3D Model"],	# List[str] in '图片风格' Checkboxgroup component
-            "Speed",	# str in '性能' Radio component
-            "1024×960",	# str in '宽高比' Radio component
-            1,	# int | float (numeric value between 1 and 32) in '图像数量' Slider component
-            random.randint(0, 100),	# int | float in '种子' Number component
-            0,	# int | float (numeric value between 0.0 and 30.0) in '采样清晰度' Slider component
+            random_styles, #["官方 无风格"],	# List[str] in 'Image Style' Checkboxgroup component
+            "Speed",	# str in 'Performance' Radio component
+            "1024×960",	# str in 'Aspect Ratios' Radio component
+            2,	# int | float (numeric value between 1 and 32) in '图像数量' Slider component
+            random.randint(0, 10000), #5,	# int | float in '种子' Number component
+            2,	# int | float (numeric value between 0.0 and 30.0) in 'Sampling Sharpness' Slider component
+            1.5,	# int | float (numeric value between 0.1 and 3.0) in 'Positive ADM Guidance Scaler' Slider component
+            0.8,	# int | float (numeric value between 0.1 and 3.0) in 'Negative ADM Guidance Scaler' Slider component
+            0.3,	# int | float (numeric value between 0.0 and 1.0) in 'ADM Guidance End At Step' Slider component
+            7,	# int | float (numeric value between 1.0 and 30.0) in 'Guidance Scale' Slider component
+            7,	# int | float (numeric value between 1.0 and 30.0) in 'CFG Mimicking from TSNR' Slider component
+            "dpmpp_2m_sde_gpu",	# str (Option from: ['euler', 'euler_ancestral', 'heun', 'dpm_2', 'dpm_2_ancestral', 'lms', 'dpm_fast', 'dpm_adaptive', 'dpmpp_2s_ancestral', 'dpmpp_sde', 'dpmpp_sde_gpu', 'dpmpp_2m', 'dpmpp_2m_sde', 'dpmpp_2m_sde_gpu', 'dpmpp_3m_sde', 'dpmpp_3m_sde_gpu', 'ddpm', 'uni_pc', 'uni_pc_bh2']) in 'Sampler' Dropdown component
+            "karras",	# str (Option from: ['normal', 'karras', 'exponential', 'sgm_uniform', 'simple', 'ddim_uniform']) in 'Scheduler' Dropdown component
+            -1,	# int | float (numeric value between -1 and 200) in 'Forced Overwrite of Sampling Step' Slider component
+            -1,	# int | float (numeric value between -1 and 200) in 'Forced Overwrite of Refiner Switch Step' Slider component
+            -1,	# int | float (numeric value between -1 and 2048) in 'Forced Overwrite of Generating Width' Slider component
+            -1,	# int | float (numeric value between -1 and 2048) in 'Forced Overwrite of Generating Height' Slider component
+            -1,	# int | float (numeric value between -1 and 1.0) in 'Forced Overwrite of Denoising Strength of "Vary"' Slider component
+            -1,	# int | float (numeric value between -1 and 1.0) in 'Forced Overwrite of Denoising Strength of "Upscale"' Slider component
             "sd_xl_base_1.0_0.9vae.safetensors",	# str (Option from: ['sd_xl_refiner_1.0_0.9vae.safetensors', 'sd_xl_base_1.0_0.9vae.safetensors']) in 'SDXL 基础模型' Dropdown component
             "sd_xl_refiner_1.0_0.9vae.safetensors",	# str (Option from: ['None', 'sd_xl_refiner_1.0_0.9vae.safetensors', 'sd_xl_base_1.0_0.9vae.safetensors']) in 'SDXL 增强模型' Dropdown component
-            "None",	# str (Option from: ['None', '中国水墨画-Chinese_Ink_Painting_style.safetensors', '彩铅-Colored lead_v1.0.safetensors', '卡通证件照_v1.0.safetensors', '神秘光符-GlowingRunesAIv4-000005.safetensors', '女性机甲-XM机械纪元_v1.0.safetensors', 'sd_xl_offset_example-lora_1.0.safetensors']) in 'SDXL LoRA 1' Dropdown component
-            -2,	# int | float (numeric value between -2 and 2) in '权重' Slider component
+            "sd_xl_offset_example-lora_1.0.safetensors",	# str (Option from: ['None', '中国水墨画-Chinese_Ink_Painting_style.safetensors', '彩铅-Colored lead_v1.0.safetensors', '卡通证件照_v1.0.safetensors', '神秘光符-GlowingRunesAIv4-000005.safetensors', '女性机甲-XM机械纪元_v1.0.safetensors', 'sd_xl_offset_example-lora_1.0.safetensors']) in 'SDXL LoRA 1' Dropdown component
+            0.5,	# int | float (numeric value between -2 and 2) in '权重' Slider component
             "None",	# str (Option from: ['None', '中国水墨画-Chinese_Ink_Painting_style.safetensors', '彩铅-Colored lead_v1.0.safetensors', '卡通证件照_v1.0.safetensors', '神秘光符-GlowingRunesAIv4-000005.safetensors', '女性机甲-XM机械纪元_v1.0.safetensors', 'sd_xl_offset_example-lora_1.0.safetensors']) in 'SDXL LoRA 2' Dropdown component
             -2,	# int | float (numeric value between -2 and 2) in '权重' Slider component
             "None",	# str (Option from: ['None', '中国水墨画-Chinese_Ink_Painting_style.safetensors', '彩铅-Colored lead_v1.0.safetensors', '卡通证件照_v1.0.safetensors', '神秘光符-GlowingRunesAIv4-000005.safetensors', '女性机甲-XM机械纪元_v1.0.safetensors', 'sd_xl_offset_example-lora_1.0.safetensors']) in 'SDXL LoRA 3' Dropdown component
@@ -168,12 +179,18 @@ async def create_draw(request: dict):
             -2,	# int | float (numeric value between -2 and 2) in '权重' Slider component
             "None",	# str (Option from: ['None', '中国水墨画-Chinese_Ink_Painting_style.safetensors', '彩铅-Colored lead_v1.0.safetensors', '卡通证件照_v1.0.safetensors', '神秘光符-GlowingRunesAIv4-000005.safetensors', '女性机甲-XM机械纪元_v1.0.safetensors', 'sd_xl_offset_example-lora_1.0.safetensors']) in 'SDXL LoRA 5' Dropdown component
             -2,	# int | float (numeric value between -2 and 2) in '权重' Slider component
-            fn_index=4
+            True,	# bool in 'Input Image' Checkbox component
+            "",	# str in 'parameter_30' Textbox component
+            "Disabled",	# str in 'Upscale or Variation:' Radio component
+            None,	# str (filepath on your computer (or URL) of image) in 'Drag above image to here' Image component
+            ["Left"],	# List[str] in 'Outpaint' Checkboxgroup component
+            None,	# str (filepath on your computer (or URL) of image) in 'Drag above image to here' Image component
+            fn_index=14
     )
 
     mdCode = [
     f"![{prompt}]({config.FOOOCUS_BASE_URL + '/file=' + item['name']})"
-    for item in result[3]['value']
+    for item in result[2]['value']
     ]
     # 构建请求的URL和数据
     template = Template("[md] $mdCode [/md]")
